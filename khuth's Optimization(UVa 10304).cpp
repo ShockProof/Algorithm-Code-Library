@@ -1,11 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-inline int _Int()
-{
-    char Syed_Zafrul_Lipu [1000];
-    scanf("%s", Syed_Zafrul_Lipu );
-    return atoi( Syed_Zafrul_Lipu );
-}
 /**
  *    Syed Zafrul Lipu (ShockProof)
  *    CSE, University of Asia Pacific
@@ -21,7 +15,7 @@ int main()
     {
         for(int i=1; i<=n; i++)
         {
-            v[i]=_Int();
+            scanf("%d", &v[i] );
             sum[i]=sum[i-1]+v[i];
         }
 
