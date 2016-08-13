@@ -2,25 +2,21 @@
 using namespace std;
 typedef long long int LL;
 typedef unsigned long long int uLL;
-char __INPUT[25];
-inline int _Int() { scanf("%s",__INPUT); return atoi(__INPUT); }
-inline LL _LLi() { scanf("%s",__INPUT); return atoll(__INPUT); }
+inline int _Int() { int x; scanf("%d",&x); return x; }
 LL bigMod(LL A,LL P,int M){ LL R=1; for(A%=M; P; P>>=1) { if(P&1) R=(R*A)%M; A=(A*A)%M; } return R; } /** (A^P) % M **/
 LL bigMul(LL A,LL B,LL M) { LL R=0; for(A%=M; B; B>>=1) { if(B&1) R=(R+A)%M; A=(A+A)%M; } return R; } /** (A*B) % M **/
+LL negMod(LL A,LL B) { return ( ( ( A % B ) + B) % B ); } /** (A % B) when A is negative or positive **/
 uLL _pow(uLL A,int P) { uLL R=1; for(; P; P>>=1) { if(P&1) R=(R*A); A=(A*A); } return R; } /** (A^P) **/
-template<class ShockProof>ShockProof GCD(ShockProof x, ShockProof y) { while(x) x^=y^=x^=y%=x; return y; } /** GCD(a,b) **/
-template<class ShockProof> ShockProof sqr(ShockProof x) { return (x*x); } /** x*x **/
-#define pb  push_back
-#define pob pop_back
-#define pi  acos(-1)
-/*************************************************************************************************************************
-**                                            Syed Zafrul Lipu (ShockProof)                                              *
-**                                            CSE, University of Asia Pacific                                            *
-**************************************************************************************************************************/
+template<class T>T GCD(T a, T b) { if(b==0) return a; a%=b; return GCD(b,a); } /** GCD(a,b) **/
+#define pi   acos(-1)
+#define pb   push_back
+#define pob  pop_back
+#define endl '\n'
 ///short int _DA[2][8]={ {1, 0, -1, 0, -1, -1, 1, 1} , {0, 1, 0, -1, -1, 1, -1, 1} }; /** Direction Array **/
 
 namespace Geometry
 {
+    template<class T>T sqr(T a) { return a*a; }
     double scandbl() { double temp; scanf("%lf",&temp); return temp; }
 
     double EPS = 1e-12; /** x<=EPS means x==0 **/
@@ -35,6 +31,9 @@ namespace Geometry
         Point operator - (const Point &p)  const { return Point(x-p.x, y-p.y); }
         Point operator * (double c)        const { return Point(x*c,   y*c  ); }
         Point operator / (double c)        const { return Point(x/c,   y/c  ); }
+        bool operator < (const Point &R ) const {
+            return (x==R.x) ? (y<R.y) : (x<R.x);
+        }
         double dist(Point &b){ return sqrt( sqr( x - b.x ) + sqr( y - b.y ) ); }
         bool operator ==(const Point &p) const {
             return isEqual(x,p.x) && isEqual(y,p.y);
@@ -201,47 +200,61 @@ namespace Geometry
         if( (x>=0 && y<0) ) return pair<int,int>(-x,-y);
         return pair<int,int>(x,y);
     }
+
+    Point BL_CH; /** Bottom-Left for convex Hull */
+    bool compFuncForCH(Point i, Point j) {
+        Vector vi(BL_CH,i);
+        Vector vj(BL_CH,j);
+        if( isEqual( vi.cross(vj), 0.0000 )  ) {
+            return BL_CH.dist(i) < BL_CH.dist(j);
+        }
+        return vi.cross(vj) < EPS;
+    }
+    void convexHull(Point L[], int &n, Point CH[], int &sz) {
+        BL_CH = L[0];
+        int ix = 0;
+        for(int i=1; i<n; i++) {
+            if( L[i] < BL_CH ) {
+                BL_CH = L[i];
+                ix = i;
+            }
+        }
+        swap(L[ix],L[0]);
+        sort( L+1, L+n, &compFuncForCH );
+        sz = 0;
+        for(int i=0; i<n; i++) {
+            while( sz > 2 ) {
+                Vector v1(CH[ sz-2 ],CH[ sz-1 ]), v2(CH[ sz-1 ],L[i]);
+                if( v1.cross(v2) < EPS ) break;
+                sz--;
+            }
+            if( !i || (i && !(L[i]==L[i-1])) ) CH[sz++] = L[i];
+        }
+    }
 }
 using namespace Geometry;
+/*************************************************************************************************************************
+**                                            Syed Zafrul Lipu (ShockProof)                                              *
+**                                            CSE, University of Asia Pacific                                            *
+**************************************************************************************************************************/
 
-/******************************************************************************************
-***********************        My Geometry template is ready        ***********************
-*******************************************************************************************/
+int Case;
 
-
+Point P[100000+7];
+Point c[100000+7];
 
 int main()
 {
-    double a,b,c;
-    while( scanf("%lf %lf %lf",&a,&b,&c) ==3 )
-    {
-        Point A(0,0), B(c,0), C(b,0);
-        double high=180,low=0,mid;
-        Vector X(A,B),Y(A,C),Z;
-        cout<<X.magnitude()<<" "<<Y.magnitude()<<endl;
-        for(int iterateFor=100; iterateFor--;)
-        {
-            mid=(high+low)/2;
-            Z=Y.rotate(mid);
-            C = Z.endPoint(A);
-            if( B.dist(C)>a ) {
-                high=mid;
-            }
-            else low=mid;
-        }
-        cout<<A<<B<<C<<endl;
-        cout<< A.dist(B) <<endl;
-        cout<< A.dist(C) <<endl;
-        cout<< C.dist(B) <<endl;
-        X.x/=2, X.y/=2, Z.x/=2, Z.y/=2;
-        Point midAB = X.endPoint(A), midAC = Z.endPoint(A);
-        cout<<midAB<<midAC<<endl;
-        Line _1(midAB,C), _2(midAC,B);
-        Point That = _1.intersects(_2);
-        cout<<That<<endl;
-        cout<< linePointDist(A,B,That,0) <<endl;
-        cout<< linePointDist(A,B,That,1) <<endl;
-        cout<< linePointDist(A,B,A+B/2,1) <<endl;
+    int n = _Int();
+    for(int i=0; i<n; i++) {
+        P[i].x = _Int();
+        P[i].y = _Int();
+    }
+    int x = 0;
+    convexHull(P,n,c,x);
+    cout<<"Convex hull"<<endl;
+    for(int i=0; i<(x); i++) {
+        cout<<c[i]<<endl;
     }
     return 0;
 }
