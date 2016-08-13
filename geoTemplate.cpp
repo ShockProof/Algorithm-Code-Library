@@ -238,8 +238,6 @@ using namespace Geometry;
 **                                            CSE, University of Asia Pacific                                            *
 **************************************************************************************************************************/
 
-int Case;
-
 Point P[100000+7];
 Point c[100000+7];
 
@@ -252,7 +250,7 @@ int main()
     }
     int x = 0;
     convexHull(P,n,c,x);
-    cout<<"Convex hull"<<endl;
+    cout<<"Convex hull Points"<<endl;
     for(int i=0; i<(x); i++) {
         cout<<c[i]<<endl;
     }
