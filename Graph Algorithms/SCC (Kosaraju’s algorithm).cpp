@@ -1,35 +1,32 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define pb  push_back
+#define pb push_back
+
 const int M = 123456;
 
-/** Kosaraju’s algorithm to find Strongly Connected Component **/
+int n;
+vector<int>G[M], iG[M];
+bool vis[M];
+int scc[M], cnt;
 
-int n,m, cnt; /** n = number of nodes ; m = number of edges ; cnt = SCC **/
-vector<int> G[M], iG[M]; /** G is the main graph and iG is the inverse graph **/
-int vis[M], iVis[M]; /** visited checking for different graphs **/
-int scc[M]; /** scc[i] is the number of scc for node i **/
-
-void dfs_1(int u)
-{
-    if( vis[u]==cnt ) return;
-    vis[u]=cnt;
-    if(scc[u] && scc[u]!=cnt) return;
-    for(int i=G[u].size()-1; i>=0; i--)
-            dfs_1(G[u][i]);
+stack<int> stk;
+void dfs_1(int u) {
+    if( vis[u] ) return;
+    vis[u] = 1;
+    for(int i=G[u].size()-1; i>=0; i--) dfs_1(G[u][i]);
+    stk.push(u);
 }
 void dfs_2(int u)
 {
-    if( iVis[u]==cnt ) return;
-    if( vis[u]==cnt ) scc[u]=cnt;
-    iVis[u]=cnt;
-    if( scc[u] && scc[u]!=cnt ) return;
-    for(int i=iG[u].size()-1; i>=0; i--)
-            dfs_2(iG[u][i]);
+    if( vis[u] ) return;
+    vis[u] = 1;
+    scc[u] = cnt;
+    for(int i=iG[u].size()-1; i>=0; i--) dfs_2(iG[u][i]);
 }
 
 int main()
 {
+    int m;
     scanf("%d %d",&n,&m);
     int u,v;
     for(int i=0; i<m; i++) {
@@ -37,11 +34,16 @@ int main()
         G[u].pb(v);
         iG[v].pb(u);
     }
+
+    memset(vis,0,sizeof(vis));
+    for(int i=1; i<=n; i++) if( !vis[i] ) dfs_1(i);
+    memset(vis,0,sizeof(vis));
     cnt=0;
-    for(int i=1; i<=n; i++) {
-        if(!scc[i]) {
-            scc[i]=++cnt;
-            dfs_1(i);
+    while( stk.size() ) {
+        int i = stk.top();
+        stk.pop();
+        if( !scc[i] ) {
+            scc[i] = ++cnt;
             dfs_2(i);
         }
     }
