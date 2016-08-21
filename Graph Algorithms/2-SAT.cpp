@@ -3,6 +3,7 @@ using namespace std;
 inline int _Int() { int x; scanf("%d",&x); return x; }
 #define pb push_back
 /** 2-SAT tutorial http://codeforces.com/blog/entry/16205 */
+/** Problem: Lightoj 1251 - Forming the Council */
 const int M = 16000 + 7;
 
 int n;
