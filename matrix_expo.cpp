@@ -2,12 +2,15 @@
 using namespace std;
 typedef long long int LL;
 inline int _Int() { int x; scanf("%d",&x); return x; }
-
+/** finding nth fibonacci number %MOD */
 int MOD = 10000000+7;
-const int D_ME = 2; /** matrix dimension for */
+const int D_ME = 2; /** matrix dimension */
 struct Matrix_Exponentiation {
 
-    int matrix[D_ME][D_ME] = { { 1, 1 } , { 1, 0 } };
+    int matrix[D_ME][D_ME] = {
+         { 1, 1 } ,
+         { 1, 0 }
+    };
 
     void copy(int A[D_ME][D_ME], int B[D_ME][D_ME]) {
         for(int i=0; i<D_ME; i++)
@@ -30,7 +33,6 @@ struct Matrix_Exponentiation {
         }
         copy(A,tem);
     }
-
     void bigmod(LL power) {
         if( power<=1 ) {
             if( power==1 ) copy(expo,matrix);
@@ -41,12 +43,11 @@ struct Matrix_Exponentiation {
         if(power&1) mul(expo,matrix);
     }
 }obj;
-
+int f[] = { 0, 1, 1, 2, 3, 5, 8 };
 int main()
 {
-    /** nth fibonacci number */
     LL n;
-    while(scanf("%lld",&n)==1) {
+    while( scanf("%lld",&n)==1 ) {
         if( n<2 ) {
             printf("%d\n",n);
             continue;
