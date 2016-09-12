@@ -35,6 +35,9 @@ struct Combinatorics{
     int nCr_mod(int n, int r) {
         return ( ((fac[n] * invFac(n-r))%MOD) * invFac(r) )%MOD;
     }
+    int nth_Catalan_Number(int i) {
+        return negMod(nCr_mod(i+i,i)-nCr_mod(i+i,i+1), MOD);
+    }
 }_math;
 
 void Main()
