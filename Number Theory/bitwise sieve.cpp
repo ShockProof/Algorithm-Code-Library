@@ -26,7 +26,7 @@ struct BitwiseSieve
         int bit = i-(x<<5);
         is[x] = is[x]^(1<<bit);
     }
-    void precalulations() {
+    void precalculations() {
         int MX = sqrt(RNG)+1;
         for(int i=2; i<=MX; i++) {
             if( !notPrime(i) ) {
@@ -70,7 +70,7 @@ void Main()
 
 int main()
 {
-    bitsieve.precalulations();
+    bitsieve.precalculations();
     int t=_Int();
     while(t--) {
         Case++;
