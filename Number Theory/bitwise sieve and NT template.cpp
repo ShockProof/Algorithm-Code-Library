@@ -4,8 +4,6 @@ typedef long long int LL;
 typedef unsigned long long int uLL;
 inline unsigned int _Int() { int x; scanf("%d",&x); return x; }
 
-int Case = 0;
-
 const int RNG = 1000001;
 int Prime[100000], Prime_sz;
 struct BitwiseSieve
@@ -64,8 +62,28 @@ void PrimeFactorization( int n, int facList[], int facPow[], int &sz) {
     }
 }
 
+struct Segmented_Sieve {
+    bool vis[100000+7];
+    int segSieve(LL a, LL b) {
+        if( b<=2 ) return ( b == 2 );
+        int ret = ( a <= 2 && b >= 2 );
+        if( a<3 ) a = 3;
+        if( !(a&1) ) a++;
+        memset(vis,0,sizeof(vis));
+        for(int i=0; i<Prime_sz; i++) {
+            LL x = (a/Prime[i])+( (a%Prime[i])!=0 );
+            x = (x*Prime[i]);
+            if(x==Prime[i]) x+=Prime[i];
+            for(LL j=x; j<=b; j+=Prime[i]) {
+                vis[j-a] = 1;
+            }
+        }
+        for(int i=0; i<(b-a+1); i+=2) ret+=(!vis[i]);
+        return ret;
+    }
+} segSieveObject;
+
 int divisor(LL x) {
-    /** works for x < 10^12 */
     int Ans = 1;
     int sqrtX = sqrt(x);
     for(int i=0; Prime[i]<=sqrtX && x>1 && i<Prime_sz; i++) {
@@ -80,11 +98,11 @@ int divisor(LL x) {
     return Ans;
 }
 
+
+int Case = 0;
+
 void Main()
 {
-    LL n;
-    scanf("%lld",&n);
-    printf("Case %d: %d\n", Case, divisor(n)-1 );
 }
 
 int main()
