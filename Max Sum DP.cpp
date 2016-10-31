@@ -2,6 +2,9 @@
 using namespace std;
 inline int _Int() { int x; scanf("%d",&x); return x; }
 
+
+
+
 struct MaximumSum{
     int _1D[1000000], sz_1D, ss, ee, max_1D;
     int kadane()
@@ -40,6 +43,46 @@ struct MaximumSum{
         return max_2D;
     }
 }MaxSum;
+
+
+
+
+
+
+
+
+
+/** --- 3D --- **/
+#define For(i,F,T) for(i=F; i<=T; i++)
+const int M = 25, inf = 2147483647;
+LL dp[M][M][M];
+LL Maximum_3D_sum(LL ar[M][M][M], int a, int b, int c) {
+    int i,j,k, I,J,K;
+    For(i,1,a) For(j,1,b) For(k,1,c)
+    {
+        LL &R = dp[i][j][k];
+
+        R = ar[i][j][k] + dp[i-1][j-1][k-1] + dp[i-1][j][k]-dp[i][j-1][k-1];
+        R +=dp[i][j-1][k] - dp[i-1][j][k-1] + dp[i][j][k-1]-dp[i-1][j-1][k];
+    }
+    LL ans = -(1LL << 50LL);
+    For(i,1,a) For(j,1,b) For(k,1,c) For(I,i,a) For(J,j,b) For(K,k,c)
+    {
+        LL sum;
+        sum  = dp[I][J][K] - dp[i-1][j-1][k-1] + dp[I][j-1][k-1] - dp[i-1][J][K];
+        sum += dp[i-1][J][k-1] - dp[I][j-1][K] + dp[i-1][j-1][K] - dp[I][J][k-1];
+
+        if(sum > ans) ans = sum;
+    }
+    return ans;
+}
+
+
+
+
+
+
+
 
 void Main()
 {
