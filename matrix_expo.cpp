@@ -1,60 +1,62 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long int LL;
-inline int _Int() { int x; scanf("%d",&x); return x; }
-/** finding nth fibonacci number %MOD */
-int MOD = 10000000+7;
-const int D_ME = 2; /** matrix dimension */
-struct Matrix_Exponentiation {
 
-    int matrix[D_ME][D_ME] = {
-         { 1, 1 } ,
-         { 1, 0 }
-    };
 
-    void copy(int A[D_ME][D_ME], int B[D_ME][D_ME]) {
-        for(int i=0; i<D_ME; i++)
-            for(int j=0; j<D_ME; j++)
-                A[i][j] = B[i][j];
-    }
-    int tem[D_ME][D_ME]; /** temporary matrix */
-    int expo[D_ME][D_ME];
-    void mul(int A[D_ME][D_ME], int B[D_ME][D_ME])
-    {
-        /** making A = A x B */
-        for(int i=0; i<D_ME; i++) {
-            for(int j=0; j<D_ME; j++)
-            {
-                tem[i][j]=0;
-                for(int k=0; k<D_ME; k++)
-                    tem[i][j]+=(A[i][k]*B[k][j])%MOD;
-                tem[i][j]%=MOD;
-            }
+const int MOD = 1000000007; const int MatSZ = 3;
+void matrixCopy(LL A[MatSZ][MatSZ], LL B[MatSZ][MatSZ]) {
+    for(int i=0; i<MatSZ; i++) for(int j=0; j<MatSZ; j++) A[i][j] = B[i][j];
+}
+LL temMat[MatSZ][MatSZ], expo[MatSZ][MatSZ];
+void matrixMul(LL A[MatSZ][MatSZ], LL B[MatSZ][MatSZ]) {
+    for(int i=0; i<MatSZ; i++) {
+        for(int j=0; j<MatSZ; j++) {
+            temMat[i][j]=0;
+            for(int k=0; k<MatSZ; k++) temMat[i][j]+=(A[i][k]*B[k][j])%MOD;
+            temMat[i][j]%=MOD;
         }
-        copy(A,tem);
     }
-    void bigmod(LL power) {
-        if( power<=1 ) {
-            if( power==1 ) copy(expo,matrix);
-            return;
-        }
-        bigmod(power>>1);
-        mul(expo,expo);
-        if(power&1) mul(expo,matrix);
+    matrixCopy( A , temMat );
+}
+LL myMat    [MatSZ][MatSZ] = {
+    { 1 , 1 , 0 },
+    { 0 , 1 , 1 },
+    { 0 , 1 , 0 }
+};
+LL idenMat  [MatSZ][MatSZ] = {
+    { 1 , 0 , 0 },
+    { 0 , 1 , 0 },
+    { 0 , 0 , 1 }
+};
+void matrixRaise(LL p) {
+    matrixCopy( expo, idenMat );
+    int r = 0, c = 0;
+    while( p ) {
+        r |= (p&1);
+        p = p>>1;
+        c ++;
+        r = r<<1;
     }
-}obj;
-int f[] = { 0, 1, 1, 2, 3, 5, 8 };
+    for(r = r >> 1; c; r = (r>>1), c--) {
+        matrixMul( expo, expo );
+        if( r&1 ) matrixMul( expo , myMat );
+    }
+}
+LL sum_of_nth_fibo(LL n) {
+    if( n<=0 ) return 0;
+    LL f[MatSZ] = { 0 , 1 , 0 };
+    matrixCopy( expo, myMat );
+    matrixRaise( n );
+    LL R = (expo[0][0] * f[0] + expo[0][1] * f[1] + expo[0][2] * f[2]);
+    return R%MOD;
+}
+
+
 int main()
 {
     LL n;
     while( scanf("%lld",&n)==1 ) {
-        if( n<2 ) {
-            printf("%d\n",n);
-            continue;
-        }
-        obj.bigmod(n-1);
-        LL Ans = ( obj.expo[0][0] + obj.expo[0][1]*0 ) % MOD;
-        printf("%lld\n", Ans );
+        printf("%lld\n", sum_of_nth_fibo(n) );
     }
     return 0;
 }
