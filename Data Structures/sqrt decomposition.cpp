@@ -3,10 +3,11 @@ using namespace std;
 inline int _Int() { int x; scanf("%d",&x); return x; }
 template<class T>bool inRng(T u, T v, T x) { return u <= x && x <= v; } /** check ( u <= x <= v )  */
 
+const int M = 100000+3;
 int n;
 int A[100000+3];
 
-const int Bound = 320; /** sqru( pow(10,5) ) */
+const int Bound = 320; /** sqrt( M ) */
 
 int sqrtN, data_sz;
 struct Interval{
