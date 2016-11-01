@@ -1,36 +1,25 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long int LL;
-typedef unsigned long long int uLL;
-char __INPUT[25];
-inline int _Int() { scanf("%s",__INPUT); return atoi(__INPUT); }
-inline LL _LLi() { scanf("%s",__INPUT); return atoll(__INPUT); }
-LL bigMod(LL A,LL P,int M){ LL R=1; for(A%=M; P; P>>=1) { if(P&1) R=(R*A)%M; A=(A*A)%M; } return R; } /** (A^P) % M **/
-LL bigMul(LL A,LL B,LL M) { LL R=0; for(A%=M; B; B>>=1) { if(B&1) R=(R+A)%M; A=(A+A)%M; } return R; } /** (A*B) % M **/
-uLL _pow(uLL A,int P) { uLL R=1; for(; P; P>>=1) { if(P&1) R=(R*A); A=(A*A); } return R; } /** (A^P) **/
-template<class ShockProof>ShockProof GCD(ShockProof x, ShockProof y) { while(x) x^=y^=x^=y%=x; return y; } /** GCD(a,b) **/
-template<class ShockProof> ShockProof sqr(ShockProof x) { return (x*x); } /** x*x **/
-#define pb  push_back
-#define pob pop_back
-#define pi  acos(-1)
+inline int _Int() { int x; scanf("%d",&x); return x; }
+#define myMemset(a,b) memset(a,b,sizeof(a))
+#define pb   push_back
 /*************************************************************************************************************************
 **                                            Syed Zafrul Lipu (ShockProof)                                              *
 **                                            CSE, University of Asia Pacific                                            *
 **************************************************************************************************************************/
-
 const int M = 10001;
 
 int n;
 vector<int>G[M];
 
 struct Graph_Artuculation{
-    /** learned from geekforgeeks **/
     bool vis[M];
     int parent[M];
     int low[M];
     int dt[M];
     bool ap[M]; /** articulation point **/
     vector<int>bridge[M];
+    set<int> bridgeAdj[M];
     int time = 0;
     void dfs(int u)
     {
@@ -49,6 +38,8 @@ struct Graph_Artuculation{
                 if( low[v]> dt[u] ) {
                     bridge[u].pb(v);
                     bridge[v].pb(u);
+                    bridgeAdj[u].insert(v);
+                    bridgeAdj[v].insert(u);
                 }
             }
             else if( v!=parent[u] ){
@@ -58,47 +49,58 @@ struct Graph_Artuculation{
     }
 
     void init() {
-        memset(vis,0,sizeof(vis));
-        memset(ap,0,sizeof(ap));
-        memset(parent,-1,sizeof(parent));
+        myMemset(vis,0);
+        myMemset(ap,0);
+        myMemset(parent,-1);
+        for(int i=0; i<M; i++) {
+            bridge[i].clear();
+            bridgeAdj[i].clear();
+        }
         time=0;
     }
 
     int call()
     {
         init();
-        for(int i=0; i<n; i++) {
-            if(!vis[i]) dfs(i);
+        for(int i=0; i<n; i++) if(!vis[i]) dfs(i);
+        int x=0;
+        for(int i=0; i<n; i++) x += ap[i];
+        return x;
+    }
+
+    /** block cut tree */
+    int BCT_n;
+    int BCT_parent[M];
+    void BCT_build(int u) {
+        if( vis[u] ) return;
+        vis[u] = 1;
+        BCT_parent[u] = BCT_n;
+        for(int i=G[u].size()-1; i>=0; i--) {
+            int v = G[u][i];
+            if( bridgeAdj[u].find(v)!=bridgeAdj[u].end() ) continue;
+            BCT_build( v );
         }
-        int cnt=0;
+    }
+    vector<int>BCT[M];
+    void block_cut_tree() {
+        for(int i=0; i<M; i++) BCT[i].clear();
+        BCT_n = 0;
+        myMemset(vis,0);
         for(int i=0; i<n; i++) {
-            cnt += ap[i];
+            if( !vis[i] ) {
+                BCT_build(i);
+                BCT_n ++;
+            }
         }
-        return cnt;
+        for(int u=0; u<n; u++){
+            for(set<int>:: iterator v = bridgeAdj[u].begin(); v!=bridgeAdj[u].end(); v++)
+                BCT[ BCT_parent[u] ].pb( BCT_parent[*v] );
+        }
     }
 }Articulation;
 
-int Case = 0;
-
-void Main()
-{
-    for(int i=0; i<M; i++ ) G[i].clear();
-    n=_Int();
-    int m=_Int(),u,v;
-    while(m--) {
-        u=_Int()-1;
-        v=_Int()-1;
-        G[u].pb(v);
-        G[v].pb(u);
-    }
-    printf("Case %d: %d\n",Case, Articulation.call() );
-}
 
 int main()
 {
-    int test=_Int();
-    while(test--) {
-        Case ++;
-        Main();
-    }
+    return 0;
 }
