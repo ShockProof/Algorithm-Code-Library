@@ -26,7 +26,7 @@ Graph Algorithms
 Number Theory
 -------------
     Eular phi (Sieve)
-    Bitwise sieve and NT template.cpp
+    Bitwise sieve and Number Theory template
 
 String Algorithms and Data-Structures
 -------------------------------------
@@ -40,6 +40,6 @@ Miscellaneous
     Histogram Technique
     Combinatorics Template
     Geometry Template
-    khuth's Optimization (UVa 10304).cpp
+    khuth's Optimization (UVa 10304)
     Matrix Expo
     Ternary Search
