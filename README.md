@@ -31,6 +31,7 @@ Number Theory
 String Algorithms and Data-Structures
 -------------------------------------
     KMP (Knuth_Morris_Pratt)
+    Suffix Array
     Trie Tree
     Hashing
 
