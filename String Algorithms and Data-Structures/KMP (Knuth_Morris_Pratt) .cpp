@@ -35,7 +35,7 @@ struct Knuth_Morris_Pratt {
             if( text[j]==pattern[i] ) {
                 i++;
                 if(i == m) {
-                    indx[sz++]=j-m;
+                    indx[sz++]=j-m+1;
                     i=F[i];
                 }
             }
