@@ -43,7 +43,7 @@ struct BitwiseSieve
     }
 } bitsieve;
 
-void PrimeFactorization( int n, int facList[], int facPow[], int &sz) {
+void PrimeFactorization( LL n, int facList[], int facPow[], int &sz) {
     int sqrtN = sqrt(n)+1;
     for(int i = sz = 0; i<Prime_sz && Prime[i]<sqrtN; i++ ) {
         if( (n%Prime[i]) != 0 ) continue;
@@ -55,6 +55,7 @@ void PrimeFactorization( int n, int facList[], int facPow[], int &sz) {
             facPow[sz]++;
         }
         sz++;
+        sqrtN = sqrt(n)+1;
     }
     if(n>1) {
         facPow[sz] = 1;
