@@ -54,8 +54,7 @@ void PrimeFactorization( LL n, int facList[], int facPow[], int &sz) {
             n/=Prime[i];
             facPow[sz]++;
         }
-        sz++;
-        sqrtN = sqrt(n)+1;
+        sz++, sqrtN = sqrt(n)+1;
     }
     if(n>1) {
         facPow[sz] = 1;
