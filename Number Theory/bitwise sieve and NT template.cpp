@@ -7,7 +7,6 @@ inline unsigned int _Int() { int x; scanf("%d",&x); return x; }
 const int RNG = 1000001;
 int Prime[RNG], Prime_sz;
 struct BitwiseSieve {
-
         int is[ (RNG/32)+3 ];
         bool isMarked(int i) { int x = i>>5; int bit = i-(x<<5); return ( is[x] & (1<<bit) ); }
         void mark(int i)     { int x = i>>5; int bit = i-(x<<5); is[x] = is[x] | (1<<bit); }
