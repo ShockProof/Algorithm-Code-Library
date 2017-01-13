@@ -17,7 +17,7 @@ struct Combinatorics{
 
         LL derangement[M];
 
-        void preCalculations()
+        void precal()
         {
                 for(int i = 0; i < 31; i ++ ) {
                         for(int j = 0; j < 31; j ++ ) {
@@ -61,7 +61,7 @@ void Main()
 
 int main()
 {
-        obj.preCalculations();
+        obj.precal();
 
         int test=_Int();
         while( test-- ) {
