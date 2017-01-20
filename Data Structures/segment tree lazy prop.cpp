@@ -48,5 +48,5 @@ void rngUpdate(int u, int v, LL add) { update( 1,1,n, u,v, add); }
 
 int main()
 {
-    return 0;
+        return 0;
 }
