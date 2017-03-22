@@ -32,6 +32,21 @@ void clearIndex(int i) {
         update( i , -query(i,i) );
 }
 
+struct FenwickTree2D {
+        int bit[M][M];
+        int sum( int x, int y ) {
+                int R = 0;
+                for( int i = x ; i >= 0 ; i = ( i&(i+1) ) -1 )
+                        for( int j = y ; j >= 0 ; j = ( j&(j+1) ) -1 ) R += bit[i][j];
+                return R;
+        }
+        void add ( int x, int y , int z ) {
+                for( int i = x ; i < M ; i = (i | (i+1)) )
+                        for( int j = y ; j < M ; j = ( j | (j+1))) bit[i][j] += z;
+        }
+        void init() { myMemset( bit , 0 ); }
+}dss;
+
 int main()
 {
     return 0;
