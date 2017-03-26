@@ -86,6 +86,22 @@ int divisor(LL x) {
         return Ans;
 }
 
+int fac[RNG], fpw[RNG];
+int PrimeFactorization_N_Factorial( int n )
+{
+        int sz = 0;
+        for( int i = 0 ; i < Prime_sz && Prime[i] <= n ; i ++ , sz ++ ) {
+                int x = n;
+                fac[sz] = Prime[i];
+                fpw[sz] = 0;
+                while( x > 1 ) {
+                        x /= Prime[i];
+                        fpw[sz] += x;
+                }
+        }
+        return sz;
+}
+
 int main()
 {
         bitsieve.precal();
