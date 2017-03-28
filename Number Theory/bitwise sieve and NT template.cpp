@@ -3,6 +3,7 @@ using namespace std;
 typedef long long int LL;
 typedef unsigned long long int uLL;
 inline unsigned int _Int() { int x; scanf("%d",&x); return x; }
+uLL _pow(uLL A,int P) { uLL R=1; for(; P; P>>=1) { if(P&1) R=(R*A); A=(A*A); } return R; } /** (A^P) **/
 
 const int RNG = 1000001;
 int Prime[RNG], Prime_sz;
@@ -68,21 +69,31 @@ struct Segmented_Sieve {
         }
 } segSieveObject;
 
-int divisor(LL x) {
-        int Ans = 1;
-        int sqrtX = sqrt(x);
-        for(int i = 0; i < Prime_sz && Prime[i] <= sqrtX && x > 1; i ++ ) {
-                int cnt = 0;
-                while( (x % Prime[i])==0 ) {
-                        x /= Prime[i];
-                        cnt ++;
-                }
-                if( cnt ) {
-                        Ans = Ans * (cnt+1);
-                        sqrtX = sqrt(x);
-                }
-        }
-        if( x>1 ) Ans <<= 1;
+LL P[1000];
+int Q[1000], facCount;
+
+LL divisors( LL n )
+{
+        PrimeFactorization( n , P , Q , facCount );
+        LL Ans = 1;
+        for( int i = 0 ; i < facCount ; i ++ )
+                Ans = Ans * ( Q[i] + 1 );
+        return Ans;
+}
+LL sigmaFunction( LL n )
+{
+        PrimeFactorization( n , P , Q , facCount );
+        LL Ans = 1;
+        for( int i = 0 ; i < facCount ; i ++ )
+                Ans = Ans * ( ( _pow( P[i] , Q[i] + 1 ) - 1 ) / ( P[i] - 1 ) );
+        return Ans;
+}
+LL eulerPhi( LL n )
+{
+        PrimeFactorization( n , P , Q , facCount );
+        LL Ans = n;
+        for( int i = 0 ; i < facCount ; i ++ )
+                Ans = ( Ans * ( P[i] + 1 ) ) / P[i];
         return Ans;
 }
 
