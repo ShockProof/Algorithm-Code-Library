@@ -5,7 +5,6 @@ inline int _Int() { int x; scanf("%d",&x); return x; }
 
 const int M = 1000 + 7 ;
 
-bool notTree;
 set<int>::iterator set_;
 
 struct SCC_DAG {
@@ -47,12 +46,12 @@ struct SCC_DAG {
                 for(int i = 0; i <= n; i ++ )
                         printf("%d -> %d\n" , i , myCom[i] );
                 for( int u = 0 ; u < n ; u ++ ) {
+                        int x = myCom[u];
                         for( int i = G[u].size() - 1 ; i >= 0 ; i -- ) {
-                                int v = G[u][i];
-                                int x = myCom[u] , y = myCom[v];
+                                int y = myCom[G[u][i]];
                                 if( x == y ) continue;
-                                if( dag[x].find(y) != dag[x].end() ) {
-                                        notTree = 1;
+                                if( dag[ x ].find( y ) != dag[ x ].end() ) {
+                                        /// x theke y e jawar ekadhik edge ase
                                 }
                                 dag[x].insert(y);
                         }
