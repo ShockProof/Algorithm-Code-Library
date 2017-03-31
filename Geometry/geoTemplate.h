@@ -25,9 +25,7 @@ struct Point {
                 return isEqual(x,p.x) && isEqual(y,p.y);
         }
 };
-ostream &operator<<(ostream &os, const Point &p) {
-        os << "( " << p.x << " , " << p.y << " )";
-}
+ostream &operator<<(ostream &os, const Point &p) { os << "( " << p.x << " , " << p.y << " )"; }
 
 struct Line {
         double a,b,c;
@@ -103,9 +101,8 @@ struct Vector{
                 return Ret;
         }
 };
-ostream &operator<<(ostream &os, const Vector &p) {
-        os << "( " << p.x << " , " << p.y << " )";
-}
+ostream &operator<<(ostream &os, const Vector &p) { os << "( " << p.x << " , " << p.y << " )"; }
+
 bool lineSegmentsIntersected(Point as, Point ae, Point bs, Point be) {
         Line A(as,ae), B(bs,be);
         Point p = A.intersects(B);
