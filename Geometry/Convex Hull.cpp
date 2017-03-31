@@ -2,7 +2,7 @@
 
 #include "geoTemplate.h"
 
-Point BL_CH; /** Bottom-Left for convex Hull */
+Point BL_CH; /** Bottom-Left point for convex Hull */
 bool compFuncForCH(Point i, Point j) {
         Vector vi(BL_CH,i);
         Vector vj(BL_CH,j);
