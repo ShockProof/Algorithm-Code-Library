@@ -14,6 +14,14 @@ Data Structures
     Segment Tree with Lazy Prop
     Square Root Decomposition
 
+Geometry
+-------------
+Convex Hull 
+geoTemplate.h
+point in polygon with shooting a ray technique
+polygon and lattice points with Pick's theorem
+precode.h
+
 Graph Algorithms
 ----------------
     2-SAT
@@ -40,7 +48,6 @@ Miscellaneous
     Maximum Sum
     Histogram Technique
     Combinatorics Template
-    Geometry Template
     khuth's Optimization (UVa 10304)
     Matrix Expo
     Ternary Search
