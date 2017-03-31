@@ -67,7 +67,6 @@ void Main()
 int main()
 {
         int test=_Int();
-        for( Case = 1 ; Case <= test ; Case ++ )
-                Main();
+        for( Case = 1 ; Case <= test ; Case ++ ) Main();
         return 0;
 }
