@@ -16,11 +16,11 @@ Data Structures
 
 Geometry
 -------------
-Convex Hull 
-geoTemplate.h
-point in polygon with shooting a ray technique
-polygon and lattice points with Pick's theorem
-precode.h
+    Convex Hull 
+    geoTemplate.h
+    point in polygon with shooting a ray technique
+    polygon and lattice points with Pick's theorem
+    precode.h
 
 Graph Algorithms
 ----------------
