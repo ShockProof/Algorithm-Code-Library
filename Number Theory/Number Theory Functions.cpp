@@ -7,27 +7,23 @@ uLL _pow(uLL A,int P) { uLL R=1; for(; P; P>>=1) { if(P&1) R=(R*A); A=(A*A); } r
 
 const int RNG = 1000001;
 int Prime[RNG], Prime_sz;
-struct BitwiseSieve {
-        int is[ (RNG/32)+3 ];
-        bool isMarked(int i) { int x = i>>5; int bit = i-(x<<5); return ( is[x] & (1<<bit) ); }
-        void mark(int i)     { int x = i>>5; int bit = i-(x<<5); is[x] = is[x] | (1<<bit); }
-        void precal() {
-                int MX = sqrt(RNG)+1;
-                for(int i = 2; i <= MX; i ++ ) {
-                        if( !isMarked(i) ) {
-                                for(int j = i + i; j <= RNG; j += i)
-                                        mark(j);
-                        }
-                }
-                Prime_sz = 0;
-                for(int i = 2; i < RNG; i ++ ) {
-                        if( !isMarked(i) ) {
-                                Prime[ Prime_sz++ ] = i;
-                        }
-                }
-                ///cout<< Prime_sz <<endl;
+int bitsieve[ (RNG>>5)+3 ]; /** bitwise sieve */
+bool is_composite(int i) { int x = i>>5; int bit = i-(x<<5); return ( bitsieve[x] & (1<<bit) ); }
+void bitsieve_mark(int i){ int x = i>>5; int bit = i-(x<<5); bitsieve[x]=bitsieve[x] | (1<<bit); }
+void bitsieve_precal() {
+        int sqrtrng = sqrt(RNG)+1 , i,j,k;
+        for( i = 4 ; i < RNG ; i += 2 ) bitsieve_mark( i );
+        for( i = 3; i < sqrtrng; i ++ ) {
+                if( is_composite(i) ) continue;
+                for( j = i*i, k=i+i; j < RNG; j += k) bitsieve_mark(j);
         }
-} bitsieve;
+        Prime_sz = 0;
+        Prime[ Prime_sz++ ] = 2;
+        for( i = 3; i < RNG; i += 2 ) {
+                if( !is_composite(i) ) Prime[ Prime_sz++ ] = i;
+        }
+        ///cout<< Prime_sz <<endl;
+}
 
 void PrimeFactorization( LL n, LL facList[], int facPow[], int &sz ) {
         int sqrtN = sqrt(n)+1;
@@ -48,26 +44,24 @@ void PrimeFactorization( LL n, LL facList[], int facPow[], int &sz ) {
         }
 }
 
-struct Segmented_Sieve {
-        bool vis[100000+7];
-        int segSieve(LL a, LL b) {
-                if( b <= 2 ) return ( b == 2 );
-                int ret = ( a <= 2 && b >= 2 );
-                if( a < 3 ) a = 3;
-                if( !( a & 1 ) ) a++;
-                memset( vis , 0 , sizeof( vis ) );
-                for(int i = 0; i < Prime_sz; i ++ ) {
-                        LL x = ( a / Prime[i] ) + ( (a%Prime[i]) != 0 );
-                        x = ( x * Prime[i] );
-                        if(x == Prime[i]) x += Prime[i];
-                        for(LL j = x; j <= b; j += Prime[i] ) {
-                                vis[j-a] = 1;
-                        }
+bool segsieve_vis[100000+7]; /** segmented sieve */
+int segSieve(LL a, LL b) {
+        if( b <= 2 ) return ( b == 2 );
+        int ret = ( a <= 2 && b >= 2 );
+        if( a < 3 ) a = 3;
+        if( !( a & 1 ) ) a++;
+        memset( segsieve_vis , 0 , sizeof( segsieve_vis ) );
+        for(int i = 0; i < Prime_sz; i ++ ) {
+                LL x = ( a / Prime[i] ) + ( (a%Prime[i]) != 0 );
+                x = ( x * Prime[i] );
+                if(x == Prime[i]) x += Prime[i];
+                for(LL j = x; j <= b; j += Prime[i] ) {
+                        segsieve_vis[j-a] = 1;
                 }
-                for(int i = 0; i < ( b - a + 1 ); i += 2 ) ret+=(!vis[i]);
-                return ret;
         }
-} segSieveObject;
+        for(int i = 0; i < ( b - a + 1 ); i += 2 ) ret+=(!segsieve_vis[i]);
+        return ret;
+}
 
 LL P[1000];
 int Q[1000], facCount;
@@ -115,6 +109,6 @@ int PrimeFactorization_N_Factorial( int n )
 
 int main()
 {
-        bitsieve.precal();
+        bitsieve_precal();
         return 0;
 }
