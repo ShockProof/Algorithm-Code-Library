@@ -36,6 +36,10 @@ Number Theory
     Eular phi (Sieve)
     Bitwise sieve and Number Theory template
 
+Sorting Algorithms
+-------------------------------------
+    Some sorting algorithms tested with UVa problem ( 11462 - Age Sort )
+
 String Algorithms and Data-Structures
 -------------------------------------
     KMP (Knuth_Morris_Pratt)
