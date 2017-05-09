@@ -5,23 +5,23 @@ inline int _Int() { int x; scanf("%d",&x); return x; }
 const int M = 100000 + 7;
 
 struct Compress {
-        int st[M], sz;
-        set<int>vis;
-        void call(int A[], int n) {
-                sz = 0;
-                vis.clear();
-                for(int i=0; i<n; i++) {
-                        if( vis.find(A[i])==vis.end() ) {
-                                vis.insert( A[i] );
-                                st[sz++] = A[i];
+        int compress_st[RNG], compress_sz;
+        set< int > compress_vis;
+        void compress_call( int compress_A[], int compress_n ) {
+                compress_sz = 0;
+                compress_vis.clear();
+                for(int i=0; i<compress_n; i++) {
+                        if( compress_vis.find(compress_A[i])==compress_vis.end() ) {
+                                compress_vis.insert( compress_A[i] );
+                                compress_st[compress_sz++] = compress_A[i];
                         }
                 }
-                sort(st,st+sz);
+                sort(compress_st,compress_st+compress_sz);
         }
-        int Rank(int x) {
-                int *ite = lower_bound(st,st+sz,x);
+        int compress_rank(int x) {
+                int *ite = lower_bound(compress_st,compress_st+compress_sz,x);
                 if( (*ite) != x  ) return -1;
-                return ite - st + 1;
+                return ite - compress_st + 1;
         }
         int actual(int x) {
                 return st[x-1];
