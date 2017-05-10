@@ -4,7 +4,9 @@ typedef unsigned long long int uLL;
 inline int _Int() {
         int x; scanf("%d",&x); return x;
 }
-LL bigMod(LL A,LL P,int M) { /** (A^P) % M **/
+
+/** (A^P) % M **/
+LL bigMod(LL A,LL P,int M) {
         LL R=1;
         for( A %= M ; P ; P >>= 1 ) {
                 if( P&1 ) R = ( R * A ) % M;
@@ -12,7 +14,9 @@ LL bigMod(LL A,LL P,int M) { /** (A^P) % M **/
         }
         return R;
 }
-LL bigMul(LL A,LL B,LL M) { /** (A*B) % M **/
+
+/** (A*B) % M **/
+LL bigMul(LL A,LL B,LL M) {
         LL R = 0;
         for( A %= M ; B ; B >>= 1 ) {
                 if( B&1 ) R = ( R + A ) % M;
@@ -20,13 +24,19 @@ LL bigMul(LL A,LL B,LL M) { /** (A*B) % M **/
         }
         return R;
 }
-LL negMod( LL A , LL B ) { /** (A % B) when A is negative or positive **/
+
+/** (A % B) when A is negative or positive **/
+LL negMod( LL A , LL B ) {
         return ( ( ( A % B ) + B) % B );
 }
-LL invMod( LL A , LL M ) { /** (A^(-1)) % M */
+
+/** (A^(-1)) % M */
+LL invMod( LL A , LL M ) {
         return bigMod( A, M-2, M );
 }
-uLL _pow(uLL A,int P) /** (A^P) **/
+
+/** (A^P) **/
+uLL _pow(uLL A,int P)
 {
         uLL R=1;
         for( ; P ; P >>= 1 ) {
@@ -35,11 +45,30 @@ uLL _pow(uLL A,int P) /** (A^P) **/
         }
         return R;
 }
-template<class T>T GCD(T x, T y) { /** Greatest Common Divisor( a , b ) **/
+
+/** A*B <= k */
+bool mul_in_limit(LL A,LL B,LL k)
+{
+        LL R = 0;
+        LL one = 1LL;
+        bool bigA = 0;
+        for( ; B ; B >>= one ) {
+                if( (B & one) && bigA ) return 0;
+                if( (B & one) ) R = ( R + A );
+                if( !bigA ) A = ( A + A );
+                if( A > k ) bigA = 1;
+                if( R > k ) return 0;
+        }
+        return 1;
+}
+
+/** Greatest Common Divisor( a , b ) **/
+template<class T>T GCD(T x, T y) {
         while(x) x ^= y ^= x ^= y %= x;
         return y;
 }
-template<class T> bool inRng( T u, T v, T x ) { /** check ( u <= x <=v ) */
+/** check ( u <= x <=v ) */
+template<class T> bool inRng( T u, T v, T x ) {
         return u <= x && x <= v;
 }
 #define myMemset(a,b) memset(a,b,sizeof(a))
