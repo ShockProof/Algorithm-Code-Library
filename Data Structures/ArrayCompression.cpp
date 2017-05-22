@@ -29,13 +29,17 @@ int compress_actual(int x) {
 
 int Collect[RNG],Collect_sz;
 
+void compress_init() {
+        Collect_sz = 0;
+}
+
 int n;
 int A[RNG];
 
 void Main()
 {
         n=_Int();
-        Collect_sz = 0;
+        compress_init();
         for(int i=1; i<=n; i++) {
                 Collect[Collect_sz++] = A[i] = _Int();
         }
