@@ -1,170 +1,117 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long int LL;
-inline int _Int() { int x; scanf("%d",&x); return x; }
-/*************************************************************************************************************************
-**                                            Syed Zafrul Lipu (ShockProof)                                              *
-**                                            CSE, University of Asia Pacific                                            *
-**************************************************************************************************************************/
-
+int _Int() { int x; scanf("%d",&x); return x; }
 int Case;
-const int M = 250000 + 7;
+const int M = 250000+7;
+const int TREE = (M<<1) + M;
 
-struct lazy_properties {
-        LL stt , inc; /// start and increase
-        bool replaced;
-        LL val;
-        LL sum;
-        void chieldren( LL csm ) {
-                stt = inc = replaced = val = 0;
-                sum = csm;
-        }
-        void set( LL a , LL b , bool c , LL d ) {
-                stt = a;
-                inc = b;
-                replaced = c;
-                val = d;
-        }
-} tree[ M*3 ] ;
+LL stt[TREE];
+LL inc[TREE];
+LL tree[TREE];
+bool has_lazy[TREE];
+bool replaced[TREE];
 
-
-LL lazy_easy( int c , LL s , LL i ) {
-        /**  returns sum of array(A) of c elements where A[0]=s and A[i]=A[i-1]+inc (i>0) */
+LL lazy_easy( int u , int v , LL s , LL i ) {
+        int c = v-u+1;
         LL cs = c;
         cs = ( cs * (cs-1) ) >> 1LL;
         return ( s * c ) + ( cs * i );
 }
 
-LL lazy_easy_term( int n , LL s , LL i ) {
-        /**  returns A[n] of array(A) elements where A[0]=s and A[i]=A[i-1]+inc (i>0) */
+LL lazy_term( int n , LL s , LL i ) {
         return s + ( n * i );
 }
 
-void lazy_update( int node, int u , int v , int L , int R , LL stt , LL inc , LL carry_stt , LL carry_inc , bool carry_replace , LL replace_val )
+void lazy_pass_down( int node , int c1 , int c2 , int u , int mid , int v )
 {
-        if( R<u || v<L ) {
-                LL c = v-u+1;
-                if( carry_replace || tree[node].replaced ) {
-                        if( !carry_replace ) {
-                                replace_val = tree[node].val;
-                                carry_stt += tree[node].stt , carry_inc += tree[node].inc;
-                        }
-                        tree[node].set(  carry_stt , carry_inc , 1 , replace_val );
-                        tree[node].sum = lazy_easy( c , tree[node].stt+replace_val , tree[node].inc );
-                }
-                else {
-                        tree[node].set( tree[node].stt + carry_stt , tree[node].inc + carry_inc , 0 , 0 );
-                        tree[node].sum += lazy_easy( c , carry_stt , carry_inc );
-                }
-                return;
-        }
-        if( L<=u && v<=R ) {
-                LL c = v-u+1;
-                stt = lazy_easy_term( u-L , stt , inc );
-                if( carry_replace || tree[node].replaced ) {
-                        if( !carry_replace ) {
-                                replace_val = tree[node].val;
-                                carry_stt += tree[node].stt , carry_inc += tree[node].inc;
-                        }
-                        tree[node].sum = lazy_easy( c , carry_stt + stt + replace_val, carry_inc + inc );
-                        tree[node].set( stt+carry_stt , inc+carry_inc , 1 , replace_val );
-                        return;
-                }
-                tree[node].sum += lazy_easy( c , carry_stt + stt , carry_inc + inc );
-                tree[node].set( tree[node].stt +carry_stt+stt , tree[node].inc +carry_inc+inc , 0,0 );
-                return;
-        }
+        if( replaced[node] ) {
+                replaced[c1] = replaced[c2] = 1;
 
-        int mid = (u+v)>>1 , c1 = (node<<1)+1; int c2 = c1+1;
-
-        if( !carry_replace ) {
-                carry_stt += tree[node].stt;
-                carry_inc += tree[node].inc;
+                stt[c1] = stt[node];
+                inc[c1] = inc[node];
+                tree[c1] = lazy_easy( u , mid , stt[c1] , inc[c1] );
+                LL stt_term = lazy_term( mid-u+1 , stt[node] , inc[node] );
+                stt[c2] = stt_term;
+                inc[c2] = inc[node];
+                tree[c2] = lazy_easy( mid+1 , v , stt_term , inc[c2] );
         }
-        if( tree[node].replaced && carry_replace==0 ) {
-                carry_replace = 1;
-                replace_val = tree[node].val;
-        }
-        lazy_update( c1 , u , mid , L,R,stt,inc, carry_stt , carry_inc , carry_replace , replace_val );
-        carry_stt = lazy_easy_term( mid+1-u , carry_stt , carry_inc );
-        lazy_update( c2 , mid+1,v , L,R,stt,inc, carry_stt , carry_inc , carry_replace , replace_val );
+        else {
+                stt[c1] += stt[node];
+                inc[c1] += inc[node];
+                tree[c1] += lazy_easy( u,mid , stt[node] , inc[node] );
 
-        tree[node].chieldren( tree[c1].sum + tree[c2].sum );
+                LL stt_term = lazy_term( mid-u+1 , stt[node] , inc[node] );
+                stt[c2] += stt_term;
+                inc[c2] += inc[node];
+                tree[c2] += lazy_easy( mid+1,v , stt_term , inc[node] );
+        }
+        has_lazy[c1] = has_lazy[c2] = 1;
+        stt[node] = inc[node] = replaced[node] = has_lazy[node] = 0;
+        tree[node] = tree[c1] + tree[c2];
 }
 
-void lazy_replace( int node, int u , int v , int L , int R , LL carry_stt , LL carry_inc , bool carry_replace , LL replace_val , LL replace_now )
+void lazy_update( int node , int u , int v , int L , int R , LL add , LL incre )
 {
-        if( R<u || v<L ) {
-                LL c = v-u+1;
-                if( carry_replace || tree[node].replaced ) {
-                        if( !carry_replace ) {
-                                replace_val = tree[node].val;
-                                carry_stt += tree[node].stt;
-                                carry_inc += tree[node].inc;
-                        }
-                        tree[node].set(  carry_stt , carry_inc , 1 , replace_val );
-                        tree[node].sum = lazy_easy( c , tree[node].stt + replace_val , tree[node].inc );
-                }
-                else {
-                        tree[node].set( tree[node].stt + carry_stt , tree[node].inc + carry_inc , 0 , 0 );
-                        tree[node].sum += lazy_easy( c , carry_stt , carry_inc );
-                }
+        if( R<u || v<L ) return;
+        if( L <= u && v <= R ) {
+
+                has_lazy[node] = 1;
+
+                LL stt_term = lazy_term( u-L , add , incre );
+                stt[node] += stt_term;
+                inc[node] += incre;
+                tree[node] += lazy_easy( u , v , stt_term , incre );
+
                 return;
         }
-        if( L<=u && v<=R ) {
-                LL c = v-u+1;
-                tree[node].sum = replace_now * c;
-                tree[node].set( 0,0, 1,replace_now);
-                return;
-        }
+        int mid = ( u + v ) >> 1 , c1 = (node<<1)+1; int c2 = c1 + 1;
 
-        int mid = (u+v)>>1 , c1 = (node<<1)+1; int c2 = c1+1;
+        if( has_lazy[node] ) lazy_pass_down( node , c1 , c2 , u , mid , v );
 
-        if( !carry_replace ) {
-                carry_stt += tree[node].stt;
-                carry_inc += tree[node].inc;
-        }
-        if( tree[node].replaced && carry_replace==0 ) {
-                carry_replace = 1;
-                replace_val = tree[node].val;
-        }
-        lazy_replace( c1 , u , mid , L,R, carry_stt , carry_inc , carry_replace , replace_val , replace_now );
-        carry_stt = lazy_easy_term( mid+1-u , carry_stt , carry_inc );
-        lazy_replace( c2 , mid+1,v , L,R, carry_stt , carry_inc , carry_replace , replace_val , replace_now );
+        lazy_update( c1 , u , mid , L , R , add , incre );
+        lazy_update( c2 , mid+1,v , L , R , add , incre );
 
-        tree[node].chieldren( tree[c1].sum + tree[c2].sum );
+        tree[node] = tree[c1] + tree[c2];
 }
 
-LL lazy_query( int node, int u , int v , int L , int R , LL carry_stt , LL carry_inc , bool carry_replace , LL replace_val )
+void lazy_replace( int node , int u , int v , int L , int R , LL val )
 {
-        if( R<u || v<L ) return 0;
-        if( L<=u && v<=R ) {
-                LL c = v-u+1;
-                if( carry_replace || tree[node].replaced ) {
-                        if( !carry_replace ) {
-                                replace_val = tree[node].val;
-                                carry_stt += tree[node].stt;
-                                carry_inc += tree[node].inc;
-                        }
-                        return lazy_easy( c , replace_val + carry_stt , carry_inc );
-                }
-                return tree[node].sum + lazy_easy( c , carry_stt , carry_inc );
-        }
+        if( R<u || v<L ) return;
+        if( L <= u && v <= R ) {
 
-        int mid = (u+v)>>1 , c1 = (node<<1)+1; int c2 = c1+1;
+                has_lazy[node] = 1;
+                replaced[node] = 1;
 
-        if( !carry_replace ) {
-                carry_stt += tree[node].stt;
-                carry_inc += tree[node].inc;
+                stt[node] = val;
+                inc[node] = 0;
+                tree[node] = lazy_easy( u,v , val , 0 );
+
+                return;
         }
-        if( tree[node].replaced && carry_replace==0 ) {
-                carry_replace = 1;
-                replace_val = tree[node].val;
+        int mid = ( u + v ) >> 1 , c1 = (node<<1)+1; int c2 = c1 + 1;
+
+        if( has_lazy[node] ) lazy_pass_down( node , c1 , c2 , u , mid , v );
+
+        lazy_replace( c1 , u , mid , L , R , val );
+        lazy_replace( c2 , mid+1,v , L , R , val );
+
+        tree[node] = tree[c1] + tree[c2];
+}
+
+void query( int node , int u , int v , int L , int R , LL &sum )
+{
+        if( R<u || v<L ) return;
+        if( L <= u && v <= R ) {
+                sum += tree[node];
+                return;
         }
-        LL Ret = lazy_query( c1 , u , mid , L,R, carry_stt , carry_inc , carry_replace, replace_val );
-        carry_stt = lazy_easy_term( mid+1-u , carry_stt , carry_inc );
-        Ret+= lazy_query( c2 , mid+1,v , L,R, carry_stt , carry_inc , carry_replace, replace_val );
-        return Ret;
+        int mid = ( u + v ) >> 1 , c1 = (node<<1)+1; int c2 = c1 + 1;
+
+        if( has_lazy[node] ) lazy_pass_down( node , c1 , c2 , u , mid , v );
+
+        query( c1 , u , mid , L , R , sum );
+        query( c2 , mid+1,v , L , R , sum );
 }
 
 int query_count , u , v;
@@ -173,20 +120,25 @@ char query_type[3];
 void Main()
 {
         query_count = _Int();
-//        memset( tree , 0 , sizeof tree );
+
         while( query_count-- ) {
-                scanf("%s %d %d",query_type , &u,&v );
-                /***/if( query_type[0] == 'A' ) {
-                        lazy_update( 0,0,M-1, u,v, 1,1, 0,0,0,0 );
+
+                scanf("%s",query_type ); u = _Int(); v = _Int();
+
+                if( query_type[0] == 'A' ) {
+                        lazy_update( 0,0,M-1, u,v, 1,1 );
                 }
                 else if( query_type[0] == 'B' ) {
-                        lazy_update( 0,0,M-1, u,v, v-u+1,-1, 0,0,0,0 );
+                        lazy_update( 0,0,M-1, u,v, v-u+1,-1 );
                 }
                 else if( query_type[0] == 'C' ) {
-                        lazy_replace( 0,0,M-1, u,v, 0,0,0,0, _Int() );
+                        lazy_replace( 0,0,M-1, u,v, _Int() );
                 }
                 else if( query_type[0] == 'S' ) {
-                        printf( "%lld\n" , lazy_query(0,0,M-1, u,v , 0,0,0,0 ) );
+                        LL sum = 0;
+                        query(0,0,M-1, u,v , sum );
+                        printf( "%lld" , sum );
+                        putchar_unlocked(10);
                 }
         }
 }
