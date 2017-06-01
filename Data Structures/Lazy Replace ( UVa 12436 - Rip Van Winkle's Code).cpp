@@ -6,20 +6,24 @@ int Case;
 const int M = 250000+7;
 const int TREE = (M<<1) + M;
 
-LL stt[TREE];
-LL inc[TREE];
-LL tree[TREE];
+LL stt[TREE]; /// start
+LL inc[TREE]; /// increase
+LL tree[TREE];/// summation
 bool has_lazy[TREE];
 bool replaced[TREE];
 
 LL lazy_easy( int u , int v , LL s , LL i ) {
         int c = v-u+1;
+        /**  returns sum of array(A) of c elements
+        where A[0]=s and A[i]=A[i-1]+inc (i>0) */
         LL cs = c;
         cs = ( cs * (cs-1) ) >> 1LL;
         return ( s * c ) + ( cs * i );
 }
 
 LL lazy_term( int n , LL s , LL i ) {
+        /**  returns A[n] of array(A) elements
+        where A[0]=s and A[i]=A[i-1]+inc (i>0) */
         return s + ( n * i );
 }
 
