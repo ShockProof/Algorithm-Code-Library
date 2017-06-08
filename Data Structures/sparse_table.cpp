@@ -23,6 +23,7 @@ int build_s_table( int A[] , int &n )
         for( int j = 1 ; (1<<j) <= n ; j ++ ) {
                 for( int i = 0 ; i < n ; i ++ ) {
                         int b = i+(1<<(j-1));
+                        if( b > n ) continue;
                         s_table[i][j].minimum = min( s_table[ i ][ j-1 ].minimum , s_table[ b ][ j-1 ].minimum );
                         s_table[i][j].maximum = max( s_table[ i ][ j-1 ].maximum , s_table[ b ][ j-1 ].maximum );
                 }
