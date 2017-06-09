@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "precode.h"
+#include "../precode.h"
 using namespace std;
 
 template<class T>T sqr(T a) { return a*a; }
