@@ -75,3 +75,8 @@ template<class T> bool inRng( T u, T v, T x ) {
 #define pi            acos(-1)
 #define pb            push_back
 #define myDebug(x)    cout<<#x<<" : "<<x<<"\n"
+
+int dir_knight_x[] = { -2, -1, -2, -1, +2, +1, +2, +1 };
+int dir_knight_y[] = { -1, -2, +1, +2, -1, -2, +1, +2 };
+int dir_x[] = { -1, -1, -1,  0,  0, +1, +1, +1 };
+int dir_y[] = { -1,  0, +1, -1, +1, -1,  0, +1 };
