@@ -9,18 +9,21 @@ Data Structures
 ---------------
     Array Compression
     BIT (Binary Indexed Tree)
+    Lazy Replace (UVa 12436)
     MO's Algorithm
     Orthogonal RMQ (with Segment Tree)
+    Persistenet Segment Tree (SPOJ KQUERY)
+    Range-Maximum-Sum Query
     Segment Tree with Lazy Prop
+    Sparse Table
     Square Root Decomposition
 
 Geometry
 -------------
     Convex Hull 
-    geoTemplate.h
+    geometry template
     point in polygon with shooting a ray technique
     polygon and lattice points with Pick's theorem
-    precode.h
 
 Graph Algorithms
 ----------------
