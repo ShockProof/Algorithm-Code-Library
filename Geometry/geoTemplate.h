@@ -150,8 +150,8 @@ double triangleAreaFromThreeSides(double A,double B,double C) {
 double linePointDist(Point a, Point b, Point p, bool isSegment) {
         Vector AB(a,b), BP(b,p), BA(b,a), AP(a,p);
         if( isSegment ) {
-                if( BA.cross(AP) > 0.00 ) return a.dist(p);
-                if( AB.cross(BP) > 0.00 ) return b.dist(p);
+                if( BA.dot(AP) > 0.00 ) return a.dist(p);
+                if( AB.dot(BP) > 0.00 ) return b.dist(p);
         }
         return fabs(AB.cross(BP)/AB.magnitude());
 }
