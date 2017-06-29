@@ -2,12 +2,9 @@
 #include "../precode.h"
 using namespace std;
 
-template<class T>T sqr(T a) { return a*a; }
-double scandbl() { double temp; scanf("%lf",&temp); return temp; }
-
 double EPS = 1e-7; /** x<=EPS means x==0 **/
 bool isEqual(double a,double b){ return (max(a,b)-min(a,b))<EPS; }
-bool inRange(double from, double key, double to) { return from <= key && key <= to; }
+bool inRange(double from, double to, double key ) { return from <= key && key <= to; }
 
 struct Point {
         double x, y;
@@ -20,12 +17,17 @@ struct Point {
         bool operator < (const Point &R ) const {
                 return (x==R.x) ? (y<R.y) : (x<R.x);
         }
-        double dist(Point &b){ return sqrt( sqr( x - b.x ) + sqr( y - b.y ) ); }
+        double dist(Point &b){ return sqrt( ( x - b.x )*( x - b.x ) + ( y - b.y )*( y - b.y ) ); }
         bool operator ==(const Point &p) const {
                 return isEqual(x,p.x) && isEqual(y,p.y);
         }
 };
-ostream &operator<<(ostream &os, const Point &p) { os << "( " << p.x << " , " << p.y << " )"; }
+istream &operator>>( istream &is , Point &p ) {
+        is >> p.x >> p.y;
+}
+ostream &operator<<( ostream &os, const Point &p) {
+        os << "( " << p.x << " , " << p.y << " )";
+}
 
 struct Line {
         double a,b,c;
@@ -79,6 +81,7 @@ struct Vector{
         }
         double cross(Vector &B) {
                 /** ax*by - ay*bx = |a| |b| sin(theta) */
+                /** isleft is true when "cross product" is negative */
                 return x * B.y - y * B.x;
         }
         double angleClockwise( Vector &B ) {
@@ -101,16 +104,15 @@ struct Vector{
                 return Ret;
         }
 };
-ostream &operator<<(ostream &os, const Vector &p) { os << "( " << p.x << " , " << p.y << " )"; }
 
 bool lineSegmentsIntersected(Point as, Point ae, Point bs, Point be) {
         Line A(as,ae), B(bs,be);
         Point p = A.intersects(B);
-        /** now just have to check if the point p is on both of the line segments */
-        return inRange( min(as.x, ae.x), p.x, max(as.x, ae.x) )
-        && inRange( min(as.y, ae.y), p.y, max(as.y, ae.y) )
-        && inRange( min(bs.x, be.x), p.x, max(bs.x, be.x) )
-        && inRange( min(bs.y, be.y), p.y ,max(bs.y, be.y) );
+        return
+           inRange( min(as.x, ae.x), max(as.x, ae.x), p.x )
+        && inRange( min(as.y, ae.y), max(as.y, ae.y), p.y )
+        && inRange( min(bs.x, be.x), max(bs.x, be.x), p.x )
+        && inRange( min(bs.y, be.y), max(bs.y, be.y), p.y );
 }
 
 Line PerpendicularBisector( Line A, Point one, Point two ) {
@@ -139,9 +141,7 @@ double parallelogramArea(Point a, Point b, Point c) {
         Vector A(b,a), B(b,c);
         return A.cross(B);
 }
-double triangleArea(Point a, Point b, Point c) {
-        return parallelogramArea(a,b,c)/2;
-}
+
 double triangleAreaFromThreeSides(double A,double B,double C) {
         double s = (A+B+C)/2;
         return sqrt(s*(s-A)*(s-B)*(s-C));
@@ -160,9 +160,9 @@ double polygonArea( vector<Point>&v ) {
         /** going to work for any irregular polygon **/
         double area  = 0.00;
         for(int i=v.size()-1; i>=2; i--) {
-                area += triangleArea( v[0], v[i], v[i-1] );
+                area += parallelogramArea( v[0], v[i], v[i-1] );
         }
-        return fabs(area);
+        return fabs(area/2.00);
 }
 
 double regularPolygonAngle( int numberOfSides ) {
@@ -173,13 +173,14 @@ double regularPolygonAngle( int numberOfSides ) {
         return (360.00/numberOfSides);
 }
 
-pair<int,int> slopeInteger(int x, int y) {
-        if(x==0&&y==0) return pair<int,int>(x,y);
-        int gcd = GCD( abs(x),abs(y) );
-        x/=gcd;
-        y/=gcd;
-        if( x<0 && y<0 ) return pair<int,int>( -x,-y );
-        if( (x<0 && y>=0) ) return pair<int,int>(x,y);
-        if( (x>=0 && y<0) ) return pair<int,int>(-x,-y);
-        return pair<int,int>(x,y);
-}
+/***
+
+Pick's Theorem:
+
+B = number of lattice points on the boundary of the polygon
+I = number of lattice points in the interior of the polygon
+Amazingly, the area of this polygon is then given by:
+
+Area = B/2 + I - 1
+
+*/
