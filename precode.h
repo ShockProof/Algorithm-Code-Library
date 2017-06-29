@@ -71,10 +71,11 @@ template<class T>T GCD(T x, T y) {
 template<class T> bool inRng( T u, T v, T x ) {
         return u <= x && x <= v;
 }
-#define myMemset(a,b) memset(a,b,sizeof(a))
-#define pi            acos(-1)
-#define pb            push_back
-#define myDebug(x)    cout<<#x<<" : "<<x<<"\n"
+#define x first
+#define y second
+#define pi acos(-1)
+#define pb push_back
+#define myDebug(x) cout<<#x<<" : "<<x<<"\n"
 
 int dir_knight_x[] = { -2, -1, -2, -1, +2, +1, +2, +1 };
 int dir_knight_y[] = { -1, -2, +1, +2, -1, -2, +1, +2 };
