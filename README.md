@@ -58,3 +58,5 @@ Miscellaneous
     khuth's Optimization (UVa 10304)
     Matrix Expo
     Ternary Search
+    Magic Square
+    ShockProof's Precode
