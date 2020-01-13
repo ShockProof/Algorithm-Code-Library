@@ -5,10 +5,81 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
+struct TrieNode {
+  int id[26];
+  vector<int> ends;
+  vector<int> suggestions;
+};
+
+vector<TrieNode> tree;
+
+int addNode() {
+  TrieNode tn = TrieNode();
+  for (int i = 0 ; i < 26; i ++ ) tn.id[i] = -1;
+  tn.ends = {};
+  tn.suggestions = {};
+
+  tree.push_back(tn);
+  return tree.size() - 1;
+};
+
+int charId(char x) { return x-'a'; }
+
+void insertInTrie(string &str, int inx) {
+  int now = 0, strSize = str.size();
+  for (int i = 0 ; i < strSize; i ++) {
+    int cid = charId(str[i]);
+    if (tree[now].id[cid] == -1) {
+      tree[now].id[cid] = addNode();
+    }
+    now = tree[now].id[cid];
+  }
+  tree[now].ends.push_back(inx);
+};
+
+vector<int> dfs(int nodeIndex) {
+  if(nodeIndex == -1) return {};
+
+  TrieNode &node = tree[nodeIndex];
+
+  node.suggestions = node.ends;
+
+  for(int i = 0 ; i < 26; i ++) {
+    vector<int> suggestions = dfs(node.id[i]);
+    int j = 0;
+    while(node.suggestions.size() < 3 && j < suggestions.size()) {
+      node.suggestions.push_back(suggestions[j++]);
+    }
+  }
+
+  return node.suggestions;
+}
+
 vector<vector<string>> suggestedProducts(vector<string>& products, string searchWord) {
-  return {};
+  tree.clear();
+  addNode(); /// root node at 0
+
+  int productsSize = products.size();
+  for(int i = 0; i < productsSize; i++) insertInTrie(products[i], i);
+
+  dfs(0);
+
+  vector<vector<string>> output = {};
+  int searchWordSize = searchWord.size(), currentIndex = 0;
+  for(int i = 0 ; i < searchWordSize; i ++) {
+    output.push_back({});
+    if (currentIndex != -1) currentIndex = tree[currentIndex].id[charId(searchWord[i])];
+    if (currentIndex != -1) {
+      for (auto j : tree[currentIndex].suggestions) {
+        output[i].push_back(products[j]);
+      }
+    }
+  }
+
+  return output;
 }
 
 int main() {
