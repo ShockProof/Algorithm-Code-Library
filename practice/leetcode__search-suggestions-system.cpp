@@ -17,7 +17,7 @@ int main() {
 
   vector<vector<string>> output = suggestedProducts(products, searchWord);
 
-  vector<vector<string>> ac_output = {
+  vector<vector<string>> desiredOutput = {
     {"mobile","moneypot","monitor"},
     {"mobile","moneypot","monitor"},
     {"mouse","mousepad"},
@@ -25,7 +25,7 @@ int main() {
     {"mouse","mousepad"},
   };
 
-  cout << ((output == ac_output) ? "Acceppted" : "Wrong Answer") << endl;
+  cout << ((output == desiredOutput) ? "Acceppted" : "Wrong Answer") << endl;
 
   return 0;
 }
