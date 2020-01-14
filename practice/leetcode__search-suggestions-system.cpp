@@ -82,6 +82,36 @@ vector<vector<string>> suggestedProducts(vector<string>& products, string search
   return output;
 }
 
+/// a simpler nlogn solution
+vector<vector<string>> suggestedProductsNLOGN(vector<string>& products, string searchWord) {
+  sort(products.begin(), products.end());
+
+  auto prefixOf = [](string prefix, string s) -> bool {
+    int prefixSize = prefix.size(), sSize = s.size();
+    if (prefixSize > sSize) return false;
+    for (int i = 0 ; i < prefix.size(); i ++) {
+      if (prefix[i] != s[i]) return false;
+    }
+    return true;
+  };
+
+  vector<vector<string>> output = {};
+  int x = 0, searchWordSize = searchWord.size(), productsSize = products.size();
+  string build = "";
+  for (int i = 0; i < searchWordSize; i ++) {
+    output.push_back({});
+    build.push_back(searchWord[i]);
+    while(build > products[x] && x < productsSize) x ++;
+    for (int j = x; j < productsSize; j ++) {
+      if (prefixOf(build, products[j])) {
+        output.back().push_back(products[j]);
+      }
+      if (output.back().size() == 3) break;
+    }
+  }
+  return output;
+}
+
 int main() {
   vector<string> products = {"mobile","mouse","moneypot","monitor","mousepad"};
   string searchWord = "mouse";
